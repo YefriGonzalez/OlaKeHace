@@ -13,11 +13,22 @@
                 <div class="card">
                     <div class="card-header text-center">Iniciar Sesión</div>
                     <div class="card-body">
+                        <!-- Mostrar mensaje de error si las credenciales son incorrectas -->
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <form action="{{ route('login.post') }}" method="POST">
                             @csrf
                             <div class="form-group">
                                 <label for="email">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="email" name="email" required autofocus>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required autofocus>
                             </div>
                             <div class="form-group">
                                 <label for="password">Contraseña</label>

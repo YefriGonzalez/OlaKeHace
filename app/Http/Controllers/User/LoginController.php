@@ -3,30 +3,46 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
     public function index()
     {
-        // return view('posts.index', [
-        //     'posts' => Post::latest()->filter(
-        //                 request(['search', 'category', 'author'])
-        //             )->paginate(18)->withQueryString()
-        // ]);
         return view("login");
     }
     //
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-    
-        // if (Auth::attempt($credentials)) {
-        //     // Autenticación exitosa
-        //     return response()->json(['message' => 'Inicio de sesión exitoso'], 200);
-        // }
-    
-        // Autenticación fallida
-        return response()->json(['message' => 'Credenciales incorrectas'], 401);
+        try {
+            $validateData = $request->validate([
+                'email' => 'required|email',
+                'password' => 'required|string'
+            ]);
+            $user = User::where("email", "=",$validateData['email'])->first();
+            if (isset($user)) {
+                if (Hash::check($validateData['password'], $user->password)) {
+                    Auth::login($user);
+                    return redirect()->intended('/home');
+                } else {
+                    error_log("La contraseña no coincide");
+                    return back()->withErrors([
+                        'password' => 'Contraseña incorrecta.',
+                    ])->onlyInput('email');
+                }
+           
+            } else {
+                error_log("No se encontro al usuario");
+                return back()->withErrors([
+                    'email' => 'Las credenciales no coinciden con nuestros registros.',
+                ])->onlyInput('email');
+            }
+        } catch (\Throwable $th) {
+            error_log($th->getMessage());
+            return redirect()->route('error.view')->with('error', 'Ocurrió un error inesperado.');
+        }
     }
 }
