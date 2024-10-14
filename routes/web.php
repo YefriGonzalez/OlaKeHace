@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [LoginController::class,'index']);
-Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware("auth");
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
 
@@ -28,5 +27,8 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 });
 
 
-// Ruta para mostrar una publicación específica
-Route::get('/posts/{post}', [PublicacionController::class, 'show'])->name('posts.show');
+Route::group(["middelare"=>["auth"]],function(){
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/posts/{post}', [PublicacionController::class, 'show'])->name('posts.show');
+    Route::post("post/report",[PublicacionController::class,"report"])->name("post.report");
+});

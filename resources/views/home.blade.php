@@ -40,14 +40,12 @@
                             <small class="text-muted">Publicado el {{ $post->created_at->format('d M, Y') }}</small> -
                             <small class="text-muted">Usuario: <strong>{{$post->username}}</strong></small>
                             <br />
-                        
-                            <a  class="btn btn-secondary mt-3">
+                            <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#asistirModal">
                                 <i class="bi bi-check-circle"></i> Asistir
-                            </a>
-                            <a  class="btn btn-danger mt-3">
+                            </button>
+                            <button class="btn btn-danger mt-3" data-bs-toggle="modal" data-bs-target="#reportModal" data-post-id="{{ $post->id }}">
                                 <i class="bi bi-exclamation-circle"></i> Reportar
-                            </a>
-
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -84,4 +82,110 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">Reportar Publicación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Cuál es el motivo del reporte?</p>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <input type="radio" name="reportReason" id="spam" value="spam">
+                        <label for="spam">Spam</label>
+                    </li>
+                    <li class="list-group-item">
+                        <input type="radio" name="reportReason" id="inappropriate" value="inappropriate">
+                        <label for="inappropriate">Contenido inapropiado</label>
+                    </li>
+                    <li class="list-group-item">
+                        <input type="radio" name="reportReason" id="false-info" value="false-info">
+                        <label for="false-info">Información falsa</label>
+                    </li>
+                    <li class="list-group-item">
+                        <input type="radio" name="reportReason" id="other" value="other">
+                        <label for="other">Otro</label>
+                        <div class="mt-3" id="otherReasonContainer" style="display: none;">
+                            <label for="otherReason" class="form-label">Especifica el motivo:</label>
+                            <input type="text" class="form-control" id="otherReason" placeholder="Especifica aquí...">
+                        </div>
+                    </li>
+
+                </ul>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="submitReport">Enviar Reporte</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    let currentPostId;
+
+    document.querySelectorAll('.btn-danger[data-bs-target="#reportModal"]').forEach((button) => {
+        button.addEventListener('click', function() {
+            currentPostId = this.getAttribute('data-post-id');
+        });
+    });
+
+    document.querySelectorAll('input[name="reportReason"]').forEach((elem) => {
+        elem.addEventListener('change', function() {
+            const otherReasonContainer = document.getElementById('otherReasonContainer');
+            if (this.value === 'other') {
+                otherReasonContainer.style.display = 'block';
+            } else {
+                otherReasonContainer.style.display = 'none';
+            }
+        });
+    });
+    document.getElementById('submitReport').addEventListener('click', function() {
+        const selectedReason = document.querySelector('input[name="reportReason"]:checked');
+        let reportReasonValue;
+
+        if (selectedReason) {
+            if (selectedReason.value === 'other') {
+                reportReasonValue = document.getElementById('otherReason').value;
+                if (!reportReasonValue) {
+                    alert('Por favor especifica el motivo.');
+                    return;
+                }
+            } else {
+                reportReasonValue = selectedReason.value;
+            }
+
+            fetch('{{ route("post.report") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        post_id: Number(currentPostId),
+                        reason: reportReasonValue,
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        var reportModal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
+                        reportModal.hide();
+                        alert('Gracias por reportar. Tu reporte ha sido enviado.');
+                    } else {
+                        alert('Hubo un error al enviar tu reporte. Intenta nuevamente más tarde.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Hubo un error al enviar tu reporte. Intenta nuevamente más tarde.');
+                });
+
+        } else {
+            alert('Por favor selecciona un motivo para reportar.');
+        }
+    });
+</script>
 @endsection

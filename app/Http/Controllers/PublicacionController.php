@@ -45,4 +45,12 @@ class PublicacionController extends Controller
     }
 
     public function show() {}
+
+    public function report(Request $request){
+        $validated = $request->validate([
+            'post_id' => 'required|exists:Publicacion,id',
+            'reason' => 'required|string|max:255',
+        ]);
+        error_log("llego aqui ". $validated['post_id']." ".$validated['reason']);
+    }
 }
