@@ -15,6 +15,7 @@ return new class extends Migration
             $table->integer('id', true);
             $table->integer('idPublicacion')->index('fk_evento_publicacion1_idx');
             $table->integer('idUsuario')->index('fk_evento_usuario1_idx');
+            $table->timestamps();
         });
     }
 

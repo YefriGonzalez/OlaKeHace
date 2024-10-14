@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('RolPermiso', function (Blueprint $table) {
             $table->integer('Rol_id', true)->index('fk_rolpermiso_rol_idx');
             $table->integer('Permiso_id')->index('fk_rolpermiso_permiso1_idx');
+            $table->timestamps();
         });
     }
 

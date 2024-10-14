@@ -13,10 +13,15 @@ return new class extends Migration
     {
         Schema::create('Publicacion', function (Blueprint $table) {
             $table->integer('id', true);
-            $table->string('nombre', 45);
+            $table->string('nombre', 100);
             $table->string('descripcion');
             $table->integer('idUsuario')->index('fk_publicacion_usuario1_idx');
-            $table->string('fechaInicio', 45)->nullable();
+            $table->date('fecha');
+            $table->string('hora', 6);
+            $table->integer('cupo');
+            $table->string('url', 200);
+            $table->timestamps();
+            $table->enum('tipoPublico', ['NIÑOS', 'ADOLESCENTES', 'ADULTOS', 'TODOS']);
         });
     }
 

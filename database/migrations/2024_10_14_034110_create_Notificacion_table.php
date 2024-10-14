@@ -18,6 +18,7 @@ return new class extends Migration
             $table->tinyInteger('leido');
             $table->integer('idUsuarioEmisor')->index('fk_notificacion_usuario1_idx');
             $table->integer('idUsuarioReceptor')->index('fk_notificacion_usuario2_idx');
+            $table->timestamps();
         });
     }
 
