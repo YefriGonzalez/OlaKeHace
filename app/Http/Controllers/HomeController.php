@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Publicacion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -12,11 +13,16 @@ class HomeController extends Controller
         $search = $request->input('search');
 
         // Obtener publicaciones ordenadas por fecha, y aplicar el filtro de búsqueda si existe
-        $posts = Publicacion::when($search, function ($query, $search) {
-            return $query->where('title', 'like', '%' . $search . '%');
-        })->orderBy('created_at', 'desc')->paginate(10); // Paginado de 10 publicaciones
+        $posts = Publicacion::join('Usuario', 'Publicacion.idUsuario', '=', 'Usuario.id') // INNER JOIN
+            ->leftJoin('Evento', 'Publicacion.id', '=', 'Evento.idPublicacion') // LEFT JOIN
+            ->select('Publicacion.*', 'Usuario.username as username', DB::raw('COUNT(Evento.id) as cantidadEvento'))
+            ->when($search, function ($query, $search) {
+                return $query->where('Publicacion.nombre', 'like', '%' . $search . '%');
+            })
+            ->groupBy('Publicacion.id', 'Usuario.username', 'Publicacion.nombre', 'Publicacion.descripcion', 'Publicacion.fecha', 'Publicacion.hora', 'Publicacion.cupo', 'Publicacion.url', 'Publicacion.tipoPublico', 'Publicacion.created_at', 'Publicacion.updated_at') // Agregar todas las columnas no agregadas
+            ->orderBy('Publicacion.created_at', 'desc')
+            ->paginate(10);
 
-        // Pasar publicaciones y búsqueda actual a la vista
-        return view('home', compact('posts', 'search'));    
+        return view('home', compact('posts', 'search'));
     }
 }

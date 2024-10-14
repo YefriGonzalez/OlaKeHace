@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 </head>
 
-<body>
+<body style="background-color:#ededed">
     <!-- Barra de navegación fija -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
@@ -22,9 +22,15 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    @if(Auth::user() && Auth::user()->idRol===1)
                     <li class="nav-item d-flex justify-content-between align-items-center">
                         <i class="bi bi-check-circle-fill text-white"></i>
                         <a class="nav-link" href="#">Aprobar Publicaciones</a>
+                    </li>
+                    @endif
+
+                    <li class="nav-item d-flex justify-content-between align-items-center">
+                        <i class="bi bi-list text-white"></i> <a class="nav-link" href="#">Mis publicaciones</a>
                     </li>
 
                     @if(Auth::user() && Auth::user()->idRol===1)
@@ -41,7 +47,6 @@
                     </li>
                     <li class="nav-item d-flex justify-content-between align-items-center">
                         <i class="bi bi-person-circle text-white"></i>
-
                         <a class="nav-link" href="#">Perfil</a>
                     </li>
 
