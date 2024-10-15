@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('url', 200);
             $table->timestamps();
             $table->enum('tipoPublico', ['NIÑOS', 'ADOLESCENTES', 'ADULTOS', 'TODOS']);
+            $table->integer("idEstado")->index("fk_publicacion_estado_idx");
         });
     }
 

@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::table('Publicacion', function (Blueprint $table) {
             $table->foreign(['idUsuario'], 'fk_Publicacion_Usuario1')->references(['id'])->on('Usuario')->onUpdate('no action')->onDelete('no action');
+            $table->foreign(['idEstado'], 'fk_publicacion_estado_idx')->references(['id'])->on('Estado')->onUpdate('no action')->onDelete('no action');
+
         });
     }
 
@@ -23,6 +25,7 @@ return new class extends Migration
     {
         Schema::table('Publicacion', function (Blueprint $table) {
             $table->dropForeign('fk_Publicacion_Usuario1');
+            $table->dropForeign('fk_publicacion_estado_idx');
         });
     }
 };
