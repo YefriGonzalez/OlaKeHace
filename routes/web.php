@@ -16,19 +16,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [LoginController::class,'index']);
+Route::get('/', [LoginController::class, 'index']);
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
 
 //Admin
 Route::group(['middleware' => ['auth', 'admin']], function () {
-    // Posts 
-    Route::post('/posts/store', [PublicacionController::class, 'create'])->name('posts.store');
+    Route::get('/posts/aprove', [PublicacionController::class, 'showListAprove'])->name('posts.aprove');
+    Route::put('/post/aprove/{id}', [PublicacionController::class, 'aprove'])->name('post.aprove');
+    Route::put('/post/rechaze/{id}', [PublicacionController::class, 'rechaze'])->name('post.rechaze');
 });
 
 
-Route::group(["middelare"=>["auth"]],function(){
+Route::group(["middelare" => ["auth"]], function () {
+    Route::post('/posts/store', [PublicacionController::class, 'create'])->name('posts.store');
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/posts/{post}', [PublicacionController::class, 'show'])->name('posts.show');
-    Route::post("post/report",[PublicacionController::class,"report"])->name("post.report");
+    Route::post("post/report", [PublicacionController::class, "report"])->name("post.report");
 });

@@ -10,6 +10,7 @@
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body style="background-color:#ededed">
@@ -25,7 +26,7 @@
                     @if(Auth::user() && Auth::user()->idRol===1)
                     <li class="nav-item d-flex justify-content-between align-items-center">
                         <i class="bi bi-check-circle-fill text-white"></i>
-                        <a class="nav-link" href="#">Aprobar Publicaciones</a>
+                        <a class="nav-link" href="/posts/aprove">Aprobar Publicaciones</a>
                     </li>
                     @endif
 

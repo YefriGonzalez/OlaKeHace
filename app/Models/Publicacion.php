@@ -19,5 +19,6 @@ class Publicacion extends Model
         "cupo",
         "url",
         "tipoPublico",
+        "idEstado"
     ];
 }

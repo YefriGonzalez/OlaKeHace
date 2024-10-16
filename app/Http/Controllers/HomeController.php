@@ -19,6 +19,7 @@ class HomeController extends Controller
             ->when($search, function ($query, $search) {
                 return $query->where('Publicacion.nombre', 'like', '%' . $search . '%');
             })
+            ->where(["idEstado" => 2])
             ->groupBy('Publicacion.id', 'Usuario.username', 'Publicacion.nombre', 'Publicacion.descripcion', 'Publicacion.fecha', 'Publicacion.hora', 'Publicacion.cupo', 'Publicacion.url', 'Publicacion.tipoPublico', 'Publicacion.created_at', 'Publicacion.updated_at') // Agregar todas las columnas no agregadas
             ->orderBy('Publicacion.created_at', 'desc')
             ->paginate(10);
