@@ -169,18 +169,24 @@
                         reason: reportReasonValue,
                     })
                 })
+                .then(response => response.json())
                 .then(response => {
-                    if (response.ok) {
+                    if (response.success) {
                         var reportModal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
                         reportModal.hide();
-                        alert('Gracias por reportar. Tu reporte ha sido enviado.');
+                        Swal.fire(
+                            'Exito!',
+                            data.message,
+                            'success'
+                        ).then(() => {
+                            location.reload();
+                        });
                     } else {
-                        alert('Hubo un error al enviar tu reporte. Intenta nuevamente más tarde.');
+                        Swal.fire('Error', 'Hubo un problema al procesar la solicitud.', 'error');
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert('Hubo un error al enviar tu reporte. Intenta nuevamente más tarde.');
+                    Swal.fire('Error', 'Hubo un problema al procesar la solicitud.', 'error');
                 });
 
         } else {

@@ -62,14 +62,7 @@ class PublicacionController extends Controller
 
     public function show() {}
 
-    public function report(Request $request)
-    {
-        $validated = $request->validate([
-            'post_id' => 'required|exists:Publicacion,id',
-            'reason' => 'required|string|max:255',
-        ]);
-        error_log("llego aqui " . $validated['post_id'] . " " . $validated['reason']);
-    }
+  
 
 
     public function showListAprove(Request $request)
@@ -77,8 +70,9 @@ class PublicacionController extends Controller
         $search = $request->input('search');
 
         // Obtener publicaciones ordenadas por fecha, y aplicar el filtro de búsqueda si existe
-        $posts = Publicacion::join('Usuario', 'Publicacion.idUsuario', '=', 'Usuario.id') // INNER JOIN
-            ->leftJoin('Evento', 'Publicacion.id', '=', 'Evento.idPublicacion') // LEFT JOIN
+        $posts = Publicacion::join('Usuario', 'Publicacion.idUsuario', '=', 'Usuario.id') 
+            ->leftJoin('Evento', 'Publicacion.id', '=', 'Evento.idPublicacion')
+            ->leftJoin("Reporte","Publicacion.id","=","Reporte.idPublicacion")
             ->select('Publicacion.*', 'Usuario.username as username', DB::raw('COUNT(Evento.id) as cantidadEvento'))
             ->when($search, function ($query, $search) {
                 return $query->where('Publicacion.nombre', 'like', '%' . $search . '%');
@@ -105,12 +99,12 @@ class PublicacionController extends Controller
         ]);
     }
 
-    public function rechaze(Request $request)
+    public function rechaze(int $id)
     {
         $post = Publicacion::findOrFail($id);
 
 
-        $post->idEstado = 3;
+        $post->idEstado = 3; //Estado de rechazado
         $post->save();
 
         return response()->json([

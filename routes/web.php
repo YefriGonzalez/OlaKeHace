@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PublicacionController;
+use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\User\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,5 +33,5 @@ Route::group(["middelare" => ["auth"]], function () {
     Route::post('/posts/store', [PublicacionController::class, 'create'])->name('posts.store');
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/posts/{post}', [PublicacionController::class, 'show'])->name('posts.show');
-    Route::post("post/report", [PublicacionController::class, "report"])->name("post.report");
+    Route::post("/post/report", [ReporteController::class, "createReport"])->name("post.report");
 });
