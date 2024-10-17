@@ -7,6 +7,7 @@ use App\Models\Publicacion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Number;
 use PhpParser\Node\Stmt\TryCatch;
 
 class PublicacionController extends Controller
@@ -62,7 +63,28 @@ class PublicacionController extends Controller
 
     public function show() {}
 
-  
+
+    public function myPostsView(Request $request)
+    {
+        $search = $request->input('search');
+
+        // Obtener publicaciones ordenadas por fecha, y aplicar el filtro de búsqueda si existe
+        $posts = Publicacion::join('Usuario', 'Publicacion.idUsuario', '=', 'Usuario.id')
+            ->leftJoin('Evento', 'Publicacion.id', '=', 'Evento.idPublicacion')
+            ->leftJoin("Reporte", "Publicacion.id", "=", "Reporte.idPublicacion")
+            ->join("Estado","Publicacion.idEstado","=","Estado.id")
+            ->select('Publicacion.*',"Estado.nombre as estado", 'Usuario.username as username', DB::raw('COUNT(Evento.id) as cantidadEvento'), DB::raw("COUNT(Reporte.id) as cantidadReporte"))
+            ->when($search, function ($query, $search) {
+                return $query->where('Publicacion.nombre', 'like', '%' . $search . '%');
+            })
+            ->where(["Publicacion.idUsuario" => $request->user()->id])
+            ->groupBy('Publicacion.id', 'Usuario.username', 'Publicacion.nombre', 'Publicacion.descripcion', 'Publicacion.fecha', 'Publicacion.hora', 'Publicacion.cupo', 'Publicacion.url', 'Publicacion.tipoPublico', 'Publicacion.created_at', 'Publicacion.updated_at') // Agregar todas las columnas no agregadas
+            ->orderBy('Publicacion.created_at', 'desc')
+            ->paginate(10);
+
+        return view('myPosts', compact('posts', 'search'));
+    }
+
 
 
     public function showListAprove(Request $request)
@@ -70,9 +92,9 @@ class PublicacionController extends Controller
         $search = $request->input('search');
 
         // Obtener publicaciones ordenadas por fecha, y aplicar el filtro de búsqueda si existe
-        $posts = Publicacion::join('Usuario', 'Publicacion.idUsuario', '=', 'Usuario.id') 
+        $posts = Publicacion::join('Usuario', 'Publicacion.idUsuario', '=', 'Usuario.id')
             ->leftJoin('Evento', 'Publicacion.id', '=', 'Evento.idPublicacion')
-            ->leftJoin("Reporte","Publicacion.id","=","Reporte.idPublicacion")
+            ->leftJoin("Reporte", "Publicacion.id", "=", "Reporte.idPublicacion")
             ->select('Publicacion.*', 'Usuario.username as username', DB::raw('COUNT(Evento.id) as cantidadEvento'))
             ->when($search, function ($query, $search) {
                 return $query->where('Publicacion.nombre', 'like', '%' . $search . '%');

@@ -34,4 +34,6 @@ Route::group(["middelare" => ["auth"]], function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/posts/{post}', [PublicacionController::class, 'show'])->name('posts.show');
     Route::post("/post/report", [ReporteController::class, "createReport"])->name("post.report");
+
+    Route::get("/myposts",[PublicacionController::class,"myPostsView"])->name("myposts");
 });

@@ -31,7 +31,7 @@
                     @endif
 
                     <li class="nav-item d-flex justify-content-between align-items-center">
-                        <i class="bi bi-list text-white"></i> <a class="nav-link" href="#">Mis publicaciones</a>
+                        <i class="bi bi-list text-white"></i> <a class="nav-link" href="/myposts">Mis publicaciones</a>
                     </li>
 
                     @if(Auth::user() && Auth::user()->idRol===1)
