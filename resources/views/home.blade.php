@@ -171,7 +171,7 @@
                 })
                 .then(response => response.json())
                 .then(response => {
-                    if (response.success) {
+                    if (response.success===true) {
                         var reportModal = bootstrap.Modal.getInstance(document.getElementById('reportModal'));
                         reportModal.hide();
                         Swal.fire(
