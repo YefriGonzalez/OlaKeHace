@@ -35,5 +35,6 @@ Route::group(["middleware" => ["auth"]], function () {
     Route::get('/posts/{post}', [PublicacionController::class, 'show'])->name('posts.show');
     Route::post("/post/report", [ReporteController::class, "createReport"])->name("post.report");
 
-    Route::get("/myposts",[PublicacionController::class,"myPostsView"])->name("myposts");
+    Route::get("/myposts", [PublicacionController::class, "myPostsView"])->name("myposts");
+    Route::get("/reported/", [PublicacionController::class, "postsReported"])->name("posts.reported");
 });

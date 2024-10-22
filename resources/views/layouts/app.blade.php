@@ -81,7 +81,7 @@
                     @if(Auth::user() && Auth::user()->idRol===1)
                     <li class="nav-item d-flex justify-content-between align-items-center">
                         <i class="bi bi-exclamation-diamond-fill"></i>
-                        <a class="nav-link" href="#">Publicaciones Reportadas</a>
+                        <a class="nav-link" href="{{ route('posts.reported') }}">Publicaciones Reportadas</a>
                     </li>
                     @endif
                     <li class="nav-item  d-flex justify-content-between align-items-center">
@@ -108,7 +108,6 @@
         </div>
     </nav>
 
-    <!-- Contenido principal debajo de la barra -->
     <div class="container mt-5 pt-4">
         @yield('content')
     </div>
