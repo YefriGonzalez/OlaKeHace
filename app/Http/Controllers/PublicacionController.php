@@ -119,6 +119,7 @@ class PublicacionController extends Controller
                 return $query->where('Publicacion.nombre', 'like', '%' . $search . '%');
             })
             ->havingRaw('COUNT(Reporte.id) >= 3')
+            ->where("idEstado","!=",4)
             ->groupBy('Publicacion.id', 'Usuario.username', 'Publicacion.nombre', 'Publicacion.descripcion', 'Publicacion.fecha', 'Publicacion.hora', 'Publicacion.cupo', 'Publicacion.url', 'Publicacion.tipoPublico', 'Publicacion.created_at', 'Publicacion.updated_at') // Agregar todas las columnas no agregadas
             ->orderBy('Publicacion.created_at', 'desc')
             ->paginate(10);

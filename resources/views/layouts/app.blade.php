@@ -15,57 +15,13 @@
 </head>
 
 <body style="background-color:#ededed">
-    <!-- Barra de navegación fija -->
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">OlaKeHace</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    @if(Auth::user() && Auth::user()->idRol===1)
-                    <li class="nav-item d-flex justify-content-between align-items-center">
-                        <i class="bi bi-check-circle-fill text-white"></i>
-                        <a class="nav-link" href="/posts/aprove">Aprobar Publicaciones</a>
-                    </li>
-                    @endif
-
-                    <li class="nav-item d-flex justify-content-between align-items-center">
-                        <i class="bi bi-list text-white"></i> <a class="nav-link" href="/myposts">Mis publicaciones</a>
-                    </li>
-
-                    @if(Auth::user() && Auth::user()->idRol===1)
-                    <li class="nav-item d-flex justify-content-between align-items-center">
-                        <i class="bi bi-exclamation-diamond-fill text-white"></i>
-                        <a class="nav-link" href="#">Publicaciones Reportadas</a>
-                    </li>
-                    @endif
-                    <li class="nav-item  d-flex justify-content-between align-items-center">
-                        <i class="bi bi-card-text text-white"></i>
-                        <button type="button" class="nav-link btn" data-bs-toggle="modal" data-bs-target="#createPostModal">
-                            Agregar publicación
-                        </button>
-                    </li>
-                    li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        {{Auth::user()->username}}
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Cerrar sesion</a></li>
-                    </ul>
-                    </li>
-
-                </ul>
-            </div>
-        </div>
-    </nav> -->
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="/home">OlaKeHace</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+            @auth
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     @if(Auth::user() && Auth::user()->idRol===1)
@@ -94,7 +50,7 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{Auth::user()->username}}
                         </a>
-                        <ul class="dropdown-menu">  
+                        <ul class="dropdown-menu">
                             <div class="d-flex justify-content-center align-items-center">
                                 <i class="bi bi-box-arrow-left"></i>
                                 <li><a class="dropdown-item" href="#">Cerrar sesion</a></li>
@@ -105,6 +61,12 @@
                 </ul>
 
             </div>
+            @endauth
+            @guest
+            <div class="text-center">
+                <a href="{{ route('login') }}" class="btn btn-primary">Iniciar sesión</a>
+            </div>
+            @endguest
         </div>
     </nav>
 

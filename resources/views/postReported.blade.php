@@ -40,11 +40,11 @@
                         <small class="text-muted">Publicado el {{ $post->created_at->format('d M, Y') }}</small> -
                         <small class="text-muted">Usuario: <strong>{{$post->username}}</strong></small>
                         <br />
-                        <button id="aprobar-btn" data-post-id="{{ $post->id }}" class="btn btn-secondary mt-3">
+                        <button id="ban-btn" data-post-id="{{ $post->id }}" class="btn btn-secondary mt-3">
                             <i class="bi bi-check-circle"></i> Banear
                         </button>
 
-                        <button id="rechazar-btn" data-post-id="{{ $post->id }}" class="btn btn-danger mt-3">
+                        <button id="omitir-btn" data-post-id="{{ $post->id }}" class="btn btn-danger mt-3">
                             <i class="bi bi-exclamation-circle"></i> Omitir reportes
                         </button>
                     </div>
@@ -80,4 +80,86 @@
         @endif
     </div>
 </div>
+<script>
+    document.getElementById('ban-btn').addEventListener('click', function() {
+        let postId = this.getAttribute('data-post-id');
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Esta acción baneara la publicación!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, banear',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/post/ban/${postId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire(
+                                '¡Aprobado!',
+                                data.message,
+                                'success'
+                            ).then(() => {
+                                location.reload();
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire('Error', 'Hubo un problema al procesar la solicitud.', 'error');
+                    });
+            }
+        });
+    });
+
+    document.getElementById('omitir-btn').addEventListener('click', function() {
+        let postId = this.getAttribute('data-post-id');
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡Esta acción omitira los reportes y la publicacion volvera a aparecer en el menu principal!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, omitir reportes',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/post/omitBan/${postId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data,data.success);
+                        if (data.success) {
+                            Swal.fire(
+                                '¡Rechazado!',
+                                data.message,
+                                'success'
+                            ).then(() => {
+                                location.reload();
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire('Error', 'Hubo un problema al procesar la publicación.', 'error');
+                    });
+            }
+        });
+    });
+</script>
 @endsection
