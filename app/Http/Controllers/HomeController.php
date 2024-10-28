@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Publicacion;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -22,10 +24,18 @@ class HomeController extends Controller
             })
             ->where(["idEstado" => 2])
             ->groupBy('Publicacion.id', 'Usuario.username', 'Publicacion.nombre', 'Publicacion.descripcion', 'Publicacion.fecha', 'Publicacion.hora', 'Publicacion.cupo', 'Publicacion.url', 'Publicacion.tipoPublico', 'Publicacion.created_at', 'Publicacion.updated_at') // Agregar todas las columnas no agregadas
-            ->havingRaw('COUNT(Reporte.id) < 3') 
+            ->havingRaw('COUNT(Reporte.id) < 3')
             ->orderBy('Publicacion.created_at', 'desc')
             ->paginate(10);
+        $unreadNotifications = User::find($request->user()->id)->unreadNotifications()->get();
+     
+        return view('home', compact('posts', 'search', 'unreadNotifications'));
+    }
 
-        return view('home', compact('posts', 'search'));
+    public function markAllAsRead()
+    {
+        Auth::user()->unreadNotifications->markAsRead();
+
+        return redirect()->back();
     }
 }

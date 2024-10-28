@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'OlaKeHace')</title>
+    @if(Auth::check())
+    <meta name="user-id" content="{{ Auth::user()->id }}">
+    @endif
+    @vite('resources/js/app.js')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -34,7 +38,7 @@
                         <i class="bi bi-list"></i> <a class="nav-link" href="/myposts">Mis publicaciones</a>
                     </li>
 
-                    @if(Auth::user() && Auth::user()->idRol===1)
+                    @if(Auth::user()->idRol===1)
                     <li class="nav-item d-flex justify-content-between align-items-center">
                         <i class="bi bi-exclamation-diamond-fill"></i>
                         <a class="nav-link" href="{{ route('posts.reported') }}">Publicaciones Reportadas</a>
@@ -46,6 +50,33 @@
                             Agregar publicación
                         </button>
                     </li>
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-bell"></i>
+                            @if($unreadNotifications->count() > 0)
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ $unreadNotifications->count() }}
+                                <span class="visually-hidden">unread notifications</span>
+                            </span>
+                            @endif
+                        </a>
+
+                        <ul class="dropdown-menu">
+                            @forelse($unreadNotifications as $notification)
+                            <li class="dropdown-item">
+                                <a href="#" class="text-decoration-none">
+                                    {{ $notification->data['message'] }}
+                                </a>
+                               
+                            </li>
+                            @empty
+                            <li class="dropdown-item text-muted">No hay notificaciones</li>
+                            @endforelse
+                            
+                        </ul>
+                    </li>
+
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{Auth::user()->username}}
@@ -57,7 +88,6 @@
                             </div>
                         </ul>
                     </li>
-
                 </ul>
 
             </div>

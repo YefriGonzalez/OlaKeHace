@@ -23,23 +23,31 @@ class LoginController extends Controller
                 'password' => 'required|string'
             ]);
             $user = User::where("email", "=",$validateData['email'])->first();
-            if (isset($user)) {
-                if (Hash::check($validateData['password'], $user->password)) {
-                    Auth::login($user);
-                    return redirect()->intended('/home');
+            if($user->activo===true){
+                if (isset($user)) {
+                    if (Hash::check($validateData['password'], $user->password)) {
+                        Auth::login($user);
+                        return redirect()->intended('/home');
+                    } else {
+                        error_log("La contraseña no coincide");
+                        return back()->withErrors([
+                            'password' => 'Contraseña incorrecta.',
+                        ])->onlyInput('email');
+                    }
+               
                 } else {
-                    error_log("La contraseña no coincide");
+                    error_log("No se encontro al usuario");
                     return back()->withErrors([
-                        'password' => 'Contraseña incorrecta.',
+                        'email' => 'Las credenciales no coinciden con nuestros registros.',
                     ])->onlyInput('email');
                 }
-           
             } else {
-                error_log("No se encontro al usuario");
+                error_log("Usuario baneado");
                 return back()->withErrors([
-                    'email' => 'Las credenciales no coinciden con nuestros registros.',
-                ])->onlyInput('email');
+                    'email' => 'El usuario ha sido bloqueado.',
+                ]);
             }
+          
         } catch (\Throwable $th) {
             error_log($th->getMessage());
             return redirect()->route('error.view')->with('error', 'Ocurrió un error inesperado.');

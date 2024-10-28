@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Publicacion;
 use App\Models\Reporte;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -48,9 +49,17 @@ class ReporteController extends Controller
     public function ban(int $id)
     {
         $post = Publicacion::find($id);
+        $user = User::find($post->idUsuario);
         if (isset($post)) {
             $post->idEstado = 4;
             $post->save();
+            if ($user->nivel == 2) {
+                $user->nivel = 1;
+                $user->save();
+            } else if ($user->nivel == 1) {
+                $user->activo = false;
+                $user->save();
+            }
             return response()->json([
                 'success' => true,
                 'message' => 'Publicacion baneada'

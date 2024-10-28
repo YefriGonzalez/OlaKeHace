@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PublicacionController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\User\LoginController;
@@ -25,12 +26,11 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/posts/aprove', [PublicacionController::class, 'showListAprove'])->name('posts.aprove');
     Route::put('/post/aprove/{id}', [PublicacionController::class, 'aprove'])->name('post.aprove');
     Route::put('/post/rechaze/{id}', [PublicacionController::class, 'rechaze'])->name('post.rechaze');
-    
+
     Route::put("/post/omitBan/{id}",[ReporteController::class,'omitBan'])->name('post.omitban');
     Route::put("/post/ban/{id}",[ReporteController::class,'ban'])->name("post.ban");
+    Route::get('/notifications/unread', [NotificationController::class, 'getUnreadNotifications'])->name("notifications.unread");
 });
-
-
 Route::group(["middleware" => ["auth"]], function () {
     Route::post('/posts/store', [PublicacionController::class, 'create'])->name('posts.store');
     Route::get('/posts/{post}', [PublicacionController::class, 'show'])->name('posts.show');

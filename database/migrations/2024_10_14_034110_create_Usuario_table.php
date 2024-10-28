@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('password');
             $table->integer('idRol')->index('fk_usuario_rol1_idx');
             $table->integer('nivel');
+            $table->boolean('activo');
             $table->timestamps();
         });
     }

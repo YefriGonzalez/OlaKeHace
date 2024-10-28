@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\RealTimeMessag;
 use App\Models\Notification;
 use App\Models\Publicacion;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -23,10 +25,11 @@ class PublicacionController extends Controller
                 "url" => "required|string",
                 "tipoPublico" => "required|string"
             ]);
-
+            
             $postsUser = Publicacion::where('idUsuario', "=", $request->user()->id)
                 ->where('idEstado', "=", 2)
                 ->count();
+            $user=User::find($request->user()->id);    
             $params = [
                 'nombre' => $validateData['nombre'],
                 'descripcion' => $validateData['descripcion'],
@@ -36,18 +39,14 @@ class PublicacionController extends Controller
                 'url' => $validateData['url'],
                 'tipoPublico' => $validateData['tipoPublico'],
                 'idUsuario' => $request->user()->id,
-                'idEstado' => ($postsUser >= 2) ? 2 : 1
+                'idEstado' => ($user->nivel==2) ? 2 : 1,
+                "nivel"=>($postsUser >= 2) ? 2 : 1
             ];
 
             Publicacion::create($params);
-            if ($postsUser < 2) {
-                Notification::create([
-                    "titulo" => "Nueva publicacion pendiente de aprobación",
-                    'descripcion' => 'El usuario ' . $request->user()->username . ' ha creado una publicacion.',
-                    'idUsuarioEmisor' => $request->user()->id,
-                    'idUsuarioReceptor' => 1, //admin
-                    'leido' => false
-                ]);
+            if ($user->nivel != 2) {
+                $userAdmin=User::find(1);
+                $userAdmin->notify(new RealTimeMessag("El usuario ' . $request->user()->username . ' ha creado una publicacion, debe ser revisada",1));
             }
             return redirect()->route('home')->with('success', 'Publicación creada correctamente');
         } catch (ValidationException $e) {

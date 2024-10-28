@@ -9,13 +9,6 @@ class Notification extends Model
 {
     use HasFactory;
 
-    protected $table = "Notificacion";
-    public $timestamps = true;
-    protected $fillable = [
-        'titulo',
-        'descripcion',
-        "leido",
-        "idUsuarioEmisor",
-        "idUsuarioReceptor",
-    ];
+    protected $table = "notifications";
+   
 }
