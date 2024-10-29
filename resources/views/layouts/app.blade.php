@@ -61,7 +61,7 @@
                             @endif
                         </a>
 
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu" id="dropdown-menu-notification">
                             <li class="dropdown-item text-decoration-none">
                                 <button class="btn btn-link " onclick="markAllAsRead()">
                                     Marcar todo como leído

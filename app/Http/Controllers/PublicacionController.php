@@ -142,11 +142,10 @@ class PublicacionController extends Controller
     public function rechaze(int $id)
     {
         $post = Publicacion::findOrFail($id);
-
-
         $post->idEstado = 3; //Estado de rechazado
         $post->save();
-
+        $userCreator=User::find($post->idUsuario);
+        $userCreator->notify(new RealTimeMessag("Publicacion rechazada",$post->idUsuario));
         return response()->json([
             'success' => true,
             'message' => 'La publicacion ha sido rechazada.'

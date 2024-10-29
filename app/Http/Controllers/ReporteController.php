@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\RealTimeMessag;
 use App\Models\Publicacion;
 use App\Models\Reporte;
 use App\Models\User;
@@ -23,6 +24,12 @@ class ReporteController extends Controller
             "idPublicacion" => $validated['post_id'],
         ]);
 
+        $reports=Reporte::where(["idPublicacion"=>$validated['post_id']]);
+        if($reports->count()>=3){
+            $userAdmin=User::find(1);
+            $userAdmin->notify(new RealTimeMessag("Una publicacion ha sido reportada mas de tres veces",1));
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'La publicacion ha sido reportada, gracias por su colaboración.'
@@ -34,6 +41,8 @@ class ReporteController extends Controller
         $post = Publicacion::find($id);
         if (isset($post)) {
             Reporte::where('idPublicacion', "=", $id)->delete();
+            $userCreator = User::find($post->idUsuario);
+            $userCreator->notify(new RealTimeMessag("Se han omitido los reportes de su publicacion", $post->idUsuario));
             return response()->json([
                 'success' => true,
                 'message' => 'Se ha omitido el ban a la publicacione.'
@@ -60,6 +69,8 @@ class ReporteController extends Controller
                 $user->activo = false;
                 $user->save();
             }
+            $userCreator = User::find($post->idUsuario);
+            $userCreator->notify(new RealTimeMessag("La publicacion ha sido baneada", $post->idUsuario));
             return response()->json([
                 'success' => true,
                 'message' => 'Publicacion baneada'
