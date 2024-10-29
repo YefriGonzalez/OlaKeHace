@@ -24,7 +24,8 @@ class User extends Authenticatable
         'email',
         'password',
         "idRol",
-        "nivel" => 0
+        "nivel" => 0,
+        "activo"
     ];
 
     /**

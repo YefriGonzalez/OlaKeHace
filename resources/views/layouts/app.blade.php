@@ -51,29 +51,33 @@
                         </button>
                     </li>
 
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" id="item_notification">
                         <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-bell"></i>
-                            @if($unreadNotifications->count() > 0)
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                {{ $unreadNotifications->count() }}
-                                <span class="visually-hidden">unread notifications</span>
+                            @if(Auth::user()->unreadNotifications->count()>0)
+                            <span class="notification-count position-absolute top-1 start-100 translate-middle badge rounded-pill bg-danger">
+                                {{ Auth::user()->unreadNotifications->count() }}
                             </span>
                             @endif
                         </a>
 
                         <ul class="dropdown-menu">
-                            @forelse($unreadNotifications as $notification)
+                            <li class="dropdown-item text-decoration-none">
+                                <button class="btn btn-link " onclick="markAllAsRead()">
+                                    Marcar todo como leído
+                                </button>
+                            </li>
+                            @forelse(Auth::user()->unreadNotifications as $notification)
                             <li class="dropdown-item">
                                 <a href="#" class="text-decoration-none">
                                     {{ $notification->data['message'] }}
                                 </a>
-                               
+
                             </li>
                             @empty
                             <li class="dropdown-item text-muted">No hay notificaciones</li>
                             @endforelse
-                            
+
                         </ul>
                     </li>
 
@@ -158,6 +162,26 @@
         const quill = new Quill('#descripcion', {
             theme: 'snow'
         });
+    </script>
+    <script>
+        function markAllAsRead() {
+            fetch("{{ route('notifications.markallasread') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                })
+                .then(response => response.json())
+                .then(response => {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert('Hubo un problema al marcar todas las notificaciones como leídas.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
     </script>
 </body>
 

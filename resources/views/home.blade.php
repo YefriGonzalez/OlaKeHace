@@ -41,12 +41,12 @@
                             <small class="text-muted">Usuario: <strong>{{$post->username}}</strong></small>
                             <br />
                             @auth
-                                <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#asistirModal">
-                                    <i class="bi bi-check-circle"></i> Asistir
-                                </button>
-                                <button class="btn btn-danger mt-3" data-bs-toggle="modal" data-bs-target="#reportModal" data-post-id="{{ $post->id }}">
-                                    <i class="bi bi-exclamation-circle"></i> Reportar
-                                </button>
+                            <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#asistirModal">
+                                <i class="bi bi-check-circle"></i> Asistir
+                            </button>
+                            <button class="btn btn-danger mt-3" data-bs-toggle="modal" data-bs-target="#reportModal" data-post-id="{{ $post->id }}">
+                                <i class="bi bi-exclamation-circle"></i> Reportar
+                            </button>
                             @endauth
 
                         </div>
@@ -55,27 +55,9 @@
                 @endforeach
             </div>
 
-            <!-- Paginación -->
-            <div class="mt-3">
+            <div class="mt-3 mb-3">
                 {{ $posts->withQueryString()->links() }}
             </div>
-            <nav aria-label="Page navigation example text-center">
-                <ul class="pagination">
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
             @else
             <div class="alert alert-warning" role="alert">
                 No se encontraron publicaciones.
@@ -121,12 +103,12 @@
 
             </div>
             @auth
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" id="submitReport">Enviar Reporte</button>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="submitReport">Enviar Reporte</button>
+            </div>
             @endauth
-            
+
         </div>
     </div>
 </div>

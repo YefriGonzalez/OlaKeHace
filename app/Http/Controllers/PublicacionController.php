@@ -46,7 +46,7 @@ class PublicacionController extends Controller
             Publicacion::create($params);
             if ($user->nivel != 2) {
                 $userAdmin=User::find(1);
-                $userAdmin->notify(new RealTimeMessag("El usuario ' . $request->user()->username . ' ha creado una publicacion, debe ser revisada",1));
+                $userAdmin->notify(new RealTimeMessag("El usuario ". $request->user()->username . " ha creado una publicacion, debe ser revisada",1));
             }
             return redirect()->route('home')->with('success', 'Publicación creada correctamente');
         } catch (ValidationException $e) {
@@ -76,7 +76,7 @@ class PublicacionController extends Controller
             ->where(["Publicacion.idUsuario" => $request->user()->id])
             ->groupBy('Publicacion.id', 'Usuario.username', 'Publicacion.nombre', 'Publicacion.descripcion', 'Publicacion.fecha', 'Publicacion.hora', 'Publicacion.cupo', 'Publicacion.url', 'Publicacion.tipoPublico', 'Publicacion.created_at', 'Publicacion.updated_at') // Agregar todas las columnas no agregadas
             ->orderBy('Publicacion.created_at', 'desc')
-            ->paginate(10);
+            ->cursorPaginate(5);
 
         return view('myPosts', compact('posts', 'search'));
     }
@@ -98,7 +98,7 @@ class PublicacionController extends Controller
             ->where(["idEstado" => 1])
             ->groupBy('Publicacion.id', 'Usuario.username', 'Publicacion.nombre', 'Publicacion.descripcion', 'Publicacion.fecha', 'Publicacion.hora', 'Publicacion.cupo', 'Publicacion.url', 'Publicacion.tipoPublico', 'Publicacion.created_at', 'Publicacion.updated_at') // Agregar todas las columnas no agregadas
             ->orderBy('Publicacion.created_at', 'desc')
-            ->paginate(10);
+            ->cursorPaginate(5);
 
         return view('postAprove', compact('posts', 'search'));
     }
@@ -121,16 +121,17 @@ class PublicacionController extends Controller
             ->where("idEstado","!=",4)
             ->groupBy('Publicacion.id', 'Usuario.username', 'Publicacion.nombre', 'Publicacion.descripcion', 'Publicacion.fecha', 'Publicacion.hora', 'Publicacion.cupo', 'Publicacion.url', 'Publicacion.tipoPublico', 'Publicacion.created_at', 'Publicacion.updated_at') // Agregar todas las columnas no agregadas
             ->orderBy('Publicacion.created_at', 'desc')
-            ->paginate(10);
+            ->cursorPaginate(5);
         return view('postReported', compact('posts', 'search'));
     }
     public function aprove(int $id)
     {
         $post = Publicacion::findOrFail($id);
-
-
+        
         $post->idEstado = 2;
         $post->save();
+        $userCreator=User::find($post->idUsuario);
+        $userCreator->notify(new RealTimeMessag("Publicacion aprobada",$post->idUsuario));
 
         return response()->json([
             'success' => true,

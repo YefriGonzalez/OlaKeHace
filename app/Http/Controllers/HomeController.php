@@ -26,9 +26,13 @@ class HomeController extends Controller
             ->groupBy('Publicacion.id', 'Usuario.username', 'Publicacion.nombre', 'Publicacion.descripcion', 'Publicacion.fecha', 'Publicacion.hora', 'Publicacion.cupo', 'Publicacion.url', 'Publicacion.tipoPublico', 'Publicacion.created_at', 'Publicacion.updated_at') // Agregar todas las columnas no agregadas
             ->havingRaw('COUNT(Reporte.id) < 3')
             ->orderBy('Publicacion.created_at', 'desc')
-            ->paginate(10);
-        $unreadNotifications = User::find($request->user()->id)->unreadNotifications()->get();
-     
+            ->cursorPaginate(5);
+        if (isset($request->user()->id)) {
+            $unreadNotifications = User::find($request->user()->id)->unreadNotifications()->get();
+        } else {
+            $unreadNotifications = [];
+        }
+
         return view('home', compact('posts', 'search', 'unreadNotifications'));
     }
 

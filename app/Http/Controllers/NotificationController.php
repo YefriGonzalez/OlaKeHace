@@ -13,4 +13,12 @@ class NotificationController extends Controller
         $unreadNotifications=User::find($request->user()->id)->unreadNotifications()->get();
         return response()->json($unreadNotifications);
     }
+
+    public function markAllAsRead(Request $request){
+        $request->user()->unreadNotifications->markAsRead();
+        return response()->json([
+            "success"=>true,
+            "message"=>"Notificaciones marcadas como leida"
+        ],200);
+    }
 }

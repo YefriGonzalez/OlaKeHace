@@ -22,9 +22,10 @@ class LoginController extends Controller
                 'email' => 'required|email',
                 'password' => 'required|string'
             ]);
-            $user = User::where("email", "=",$validateData['email'])->first();
-            if($user->activo===true){
-                if (isset($user)) {
+            $user = User::where("email", "=", $validateData['email'])->first();
+
+            if (isset($user)) {
+                if ($user->activo == true) {
                     if (Hash::check($validateData['password'], $user->password)) {
                         Auth::login($user);
                         return redirect()->intended('/home');
@@ -34,20 +35,18 @@ class LoginController extends Controller
                             'password' => 'Contraseña incorrecta.',
                         ])->onlyInput('email');
                     }
-               
                 } else {
-                    error_log("No se encontro al usuario");
+                    error_log("Usuario baneado");
                     return back()->withErrors([
-                        'email' => 'Las credenciales no coinciden con nuestros registros.',
-                    ])->onlyInput('email');
+                        'email' => 'El usuario ha sido bloqueado.',
+                    ]);
                 }
             } else {
-                error_log("Usuario baneado");
+                error_log("No se encontro al usuario");
                 return back()->withErrors([
-                    'email' => 'El usuario ha sido bloqueado.',
-                ]);
+                    'email' => 'Las credenciales no coinciden con nuestros registros.',
+                ])->onlyInput('email');
             }
-          
         } catch (\Throwable $th) {
             error_log($th->getMessage());
             return redirect()->route('error.view')->with('error', 'Ocurrió un error inesperado.');
