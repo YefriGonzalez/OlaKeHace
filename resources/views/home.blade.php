@@ -41,7 +41,7 @@
                             <small class="text-muted">Usuario: <strong>{{$post->username}}</strong></small>
                             <br />
                             @auth
-                            <button class="btn btn-secondary mt-3" data-bs-toggle="modal" data-bs-target="#asistirModal">
+                            <button class="btn btn-secondary mt-3 submit-assist" data-post-id="{{ $post->id }}">
                                 <i class="bi bi-check-circle"></i> Asistir
                             </button>
                             <button class="btn btn-danger mt-3" data-bs-toggle="modal" data-bs-target="#reportModal" data-post-id="{{ $post->id }}">
@@ -112,6 +112,9 @@
         </div>
     </div>
 </div>
+
+
+
 <script>
     let currentPostId;
 
@@ -121,6 +124,11 @@
         });
     });
 
+    document.querySelectorAll('.btn-secondary[data-bs-target="#assistModal"]').forEach((button) => {
+        button.addEventListener('click', function() {
+            currentPostId = this.getAttribute('data-post-id');
+        });
+    });
     document.querySelectorAll('input[name="reportReason"]').forEach((elem) => {
         elem.addEventListener('change', function() {
             const otherReasonContainer = document.getElementById('otherReasonContainer');
@@ -180,6 +188,53 @@
         } else {
             alert('Por favor selecciona un motivo para reportar.');
         }
+    });
+
+    document.querySelectorAll('.submit-assist').forEach(button => {
+        button.addEventListener('click', function() {
+            let idPublicacion = this.getAttribute('data-post-id');
+
+            Swal.fire({
+                title: 'Asistencia',
+                text: "¿Deseas asistir a este evento?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí',
+                cancelButtonText: 'No'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('{{ route("events.register") }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                idPublicacion: Number(idPublicacion),
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire(
+                                    '¡Éxito!',
+                                    data.message,
+                                    'success'
+                                ).then(() => {
+                                    location.reload();
+                                });
+                            } else {
+                                Swal.fire('Error', data.message, 'error');
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire('Error', 'Hubo un problema al procesar la solicitud.', 'error');
+                        });
+                }
+            });
+        });
     });
 </script>
 @endsection

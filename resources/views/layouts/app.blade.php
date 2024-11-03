@@ -51,6 +51,18 @@
                         </button>
                     </li>
 
+
+                    <li class="nav-item dropdown" id="item_events">
+                        <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Mis eventos
+
+                        </a>
+
+                        <ul class="dropdown-menu" id="dropdown-menu-events">
+                            <li class="dropdown-item text-muted" id="no-events">No hay eventos</li>
+                        </ul>
+                    </li>
+
                     <li class="nav-item dropdown" id="item_notification">
                         <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-bell"></i>
@@ -182,6 +194,48 @@
                 })
                 .catch(error => console.error('Error:', error));
         }
+    </script>
+
+    <script>
+        document.getElementById('item_events').addEventListener('show.bs.dropdown', function() {
+            console.log("entro aqui ")
+            fetch("{{ route('events.list') }}")
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    const menu = document.getElementById('dropdown-menu-events');
+                    menu.innerHTML = ''; // Limpiar el menú antes de agregar nuevas notificaciones
+
+                    if (data?.data?.length === 0) {
+                        menu.innerHTML = '<li class="dropdown-item text-muted">No hay notificaciones</li>';
+                    } else {
+                        data.data.forEach(item => {
+                            // Calcula el tiempo restante en función de la fecha de fin
+                            const fechaFin = new Date(item.fecha);
+                            const ahora = new Date();
+                            const diferenciaMs = fechaFin - ahora;
+
+                            let tiempoRestante;
+
+                            if (diferenciaMs > 0) {
+                                const dias = Math.floor(diferenciaMs / (1000 * 60 * 60 * 24));
+                                const horas = Math.floor((diferenciaMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                const minutos = Math.floor((diferenciaMs % (1000 * 60 * 60)) / (1000 * 60));
+                                tiempoRestante = `${dias}d ${horas}h ${minutos}m restantes`;
+                            } else {
+                                tiempoRestante = "Evento finalizado";
+                            }
+
+                            // Crear y agregar el elemento de la lista
+                            const li = document.createElement('li');
+                            li.className = 'dropdown-item';
+                            li.innerHTML = `<a href="#" class="text-decoration-none">${item.nombre} - <small>${tiempoRestante}</small></a>`;
+                            menu.appendChild(li);
+                        });
+                    }
+                })
+                .catch(error => console.error('Error al obtener notificaciones:', error));
+        });
     </script>
 </body>
 

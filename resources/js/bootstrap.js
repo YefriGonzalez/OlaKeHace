@@ -43,21 +43,4 @@ window.Echo.private(`App.Models.User.${userId}`).notification(
 
 function updateNotificationBell(notification) {
     location.reload();
-    // const notificationCount = document.querySelector(".notification-count");
-    // const dropdownMenu = document.querySelector(".dropdown-menu-notification");
-
-    // let currentCount = parseInt(notificationCount?.innerText) || 0;
-    // notificationCount.innerText = currentCount + 1;
-    // notificationCount.style.display = "inline";
-
-    // const listItem = document.createElement("li");
-    // listItem.classList.add("dropdown-item");
-
-    // const link = document.createElement("a");
-    // link.href = `/notification/show/${notification.id}`; // Ajusta la ruta según corresponda
-    // link.classList.add("text-decoration-none");
-    // link.innerText = notification.data.message; // Ajusta según los datos de la notificación
-
-    // listItem.appendChild(link);
-    // dropdownMenu.appendChild(listItem); 
 }
