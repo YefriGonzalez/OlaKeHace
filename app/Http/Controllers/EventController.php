@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\Publicacion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
@@ -25,6 +27,17 @@ class EventController extends Controller
             "idPublicacion" => "required|int|exists:Publicacion,id"
         ]);
 
+        $asistentes = Publicacion::join('Evento', 'Publicacion.id', '=', 'Evento.idPublicacion')
+        ->where('Publicacion.id', $validated['idPublicacion'])
+        ->select(DB::raw('COUNT(Evento.id) as cantidadEvento'))
+        ->first();
+        $post=Publicacion::find($validated['idPublicacion'])->first();
+        if($post->cupo<$asistentes->cantidadEvento){
+            return response()->json([
+                "success" => false,
+                "message" => "No hay cupos disponibles"
+            ]);
+        }
         // Busca si ya existe un registro
         $row = Event::where([
             "idPublicacion" => $validated["idPublicacion"],

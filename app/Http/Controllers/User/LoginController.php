@@ -52,4 +52,32 @@ class LoginController extends Controller
             return redirect()->route('error.view')->with('error', 'Ocurrió un error inesperado.');
         }
     }
+
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'username' => 'required|string',
+            'email' => 'required|string|email|min:6',
+            'password' => 'required|string',
+            'password_confirmation' => 'same:password|min:6'
+        ]);
+        User::create([
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+            'idRol' => 2,
+            'nivel' => 1,
+            'activo' => true
+        ]);
+        return redirect()->intended('/');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/home');
+    }
 }

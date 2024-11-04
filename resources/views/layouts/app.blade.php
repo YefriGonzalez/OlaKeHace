@@ -74,11 +74,14 @@
                         </a>
 
                         <ul class="dropdown-menu" id="dropdown-menu-notification">
+                            @if (Auth::user()->unreadNotifications->count()>0)
                             <li class="dropdown-item text-decoration-none">
                                 <button class="btn btn-link " onclick="markAllAsRead()">
                                     Marcar todo como leído
                                 </button>
                             </li>
+                            @endif
+
                             @forelse(Auth::user()->unreadNotifications as $notification)
                             <li class="dropdown-item">
                                 <a href="#" class="text-decoration-none">
@@ -95,12 +98,17 @@
 
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{Auth::user()->username}}
+                            {{ Auth::user()->username }}
                         </a>
                         <ul class="dropdown-menu">
                             <div class="d-flex justify-content-center align-items-center">
                                 <i class="bi bi-box-arrow-left"></i>
-                                <li><a class="dropdown-item" href="#">Cerrar sesion</a></li>
+                                <li>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">Cerrar sesión</button>
+                                    </form>
+                                </li>
                             </div>
                         </ul>
                     </li>
@@ -110,7 +118,7 @@
             @endauth
             @guest
             <div class="text-center">
-                <a href="{{ route('login') }}" class="btn btn-primary">Iniciar sesión</a>
+                <a href="{{ route('login') }}" class="btn btn-primary">Iniciar sesión o registrarse</a>
             </div>
             @endguest
         </div>

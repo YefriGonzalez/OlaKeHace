@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [LoginController::class, 'index'])->name("login");
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::post("/register", [LoginController::class, "register"])->name("register");
 //Admin
 Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::get('/posts/aprove', [PublicacionController::class, 'showListAprove'])->name('posts.aprove');
@@ -45,4 +46,6 @@ Route::group(["middleware" => ["auth"]], function () {
     //Eventos
     Route::get('/events/list', [EventController::class, "listMyEvents"])->name("events.list");
     Route::post("/event/register", [EventController::class, "registerEvent"])->name("events.register");
+
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
