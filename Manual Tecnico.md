@@ -24,11 +24,11 @@ administrar publicaciones, aprobarlas, rechazarlas y un portal para poder marcar
 
 
 ## DIAGRAMA DE TABLAS
-![alt text](/diagramas/Diagrama de tablas.png)
+![alt text](<diagramas/Diagrama de tablas.png>)
 
 
 ## Diagrama de paquetes
-![alt text](/diagramas/Diagrama Paquetes TEO2.png)
+![alt text](<diagramas/Diagrama Paquetes TEO2.png>)
 
 ## Diagrama de Despliegue
 ![alt text](<diagramas/Diagrama Despligue TEO2.png>)
