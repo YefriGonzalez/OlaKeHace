@@ -57,7 +57,7 @@
         <div class="mt-3">
             {{ $posts->withQueryString()->links() }}
         </div>
-       
+
         @else
         <div class="alert alert-warning" role="alert">
             No se encontraron publicaciones.
@@ -66,84 +66,89 @@
     </div>
 </div>
 <script>
-    document.getElementById('aprobar-btn').addEventListener('click', function() {
-        let postId = this.getAttribute('data-post-id');
+    // Función para aprobar
+    document.querySelectorAll('#aprobar-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            let postId = this.getAttribute('data-post-id');
 
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡Esta acción aprobará la publicación!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, aprobar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/post/aprove/${postId}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire(
-                                '¡Aprobado!',
-                                data.message,
-                                'success'
-                            ).then(() => {
-                                location.reload();
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire('Error', 'Hubo un problema al procesar la solicitud.', 'error');
-                    });
-            }
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción aprobará la publicación!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, aprobar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/post/aprove/${postId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire(
+                                    '¡Aprobado!',
+                                    data.message,
+                                    'success'
+                                ).then(() => {
+                                    location.reload();
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire('Error', 'Hubo un problema al procesar la solicitud.', 'error');
+                        });
+                }
+            });
         });
     });
 
     // Función para rechazar
-    document.getElementById('rechazar-btn').addEventListener('click', function() {
-        let postId = this.getAttribute('data-post-id');
+    document.querySelectorAll('#rechazar-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            let postId = this.getAttribute('data-post-id');
 
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡Esta acción rechazará la publicación!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Sí, rechazar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                fetch(`/aprove/rechaze/${postId}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire(
-                                '¡Rechazado!',
-                                data.message,
-                                'success'
-                            ).then(() => {
-                                location.reload();
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire('Error', 'Hubo un problema al procesar la publicación.', 'error');
-                    });
-            }
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡Esta acción rechazará la publicación!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, rechazar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/post/rechaze/${postId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire(
+                                    '¡Rechazado!',
+                                    data.message,
+                                    'success'
+                                ).then(() => {
+                                    location.reload();
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire('Error', 'Hubo un problema al procesar la publicación.', 'error');
+                        });
+                }
+            });
         });
     });
 </script>

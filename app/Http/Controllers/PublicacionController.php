@@ -16,7 +16,7 @@ class PublicacionController extends Controller
     public function create(Request $request)
     {
         try {
-            $validateData = $request->validate([
+            $validateData = $request->validate(rules: [
                 'nombre' => 'required|string',
                 'descripcion' => 'required|string',
                 "fecha" => 'required|date',
